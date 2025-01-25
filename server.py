@@ -39,28 +39,24 @@ oauth.register(
 @app.route("/login")
 def login():
     return oauth.auth0.authorize_redirect(
-        redirect_uri=url_for("callback", _external=True)
+        redirect_uri=url_for("callback", _external=True, _scheme='https', _host='syncherup.co')
     )
-
-# 👆 We're continuing from the steps above. Append this to your server.py file.
 
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
-    return redirect("/")
-
-# 👆 We're continuing from the steps above. Append this to your server.py file.
+    return redirect("https://syncherup.co/")
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(
-        "https://" + env.get("AUTH0_DOMAIN")
+        f"https://{env.get('AUTH0_DOMAIN')}"
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": url_for("home", _external=True),
+                "returnTo": "https://syncherup.co",
                 "client_id": env.get("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
