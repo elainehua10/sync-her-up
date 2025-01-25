@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menstrual Cycle Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .card {
+      padding: 1rem;
+      background: #f4f4f4;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Menstrual Cycle Tracker</h1>
+  <div class="card">
+    <label for="cycleStartDate">Cycle Start Date</label>
+    <input type="date" id="cycleStartDate" name="cycleStartDate">
+
+    <label for="cycleLength">Cycle Length (in days)</label>
+    <input type="number" id="cycleLength" name="cycleLength">
+
+    <label for="characteristics">Characteristics of Your Cycle</label>
+    <textarea id="characteristics" name="characteristics" placeholder="E.g., heavy flow, cramps, fatigue, etc."></textarea>
+
+    <button onclick="fetchRecommendations()">Get Fitness & Food Plan</button>
+  </div>
+
+  <div id="recommendations" class="card" style="display: none;">
+    <h2>Your Recommendations</h2>
+    <div>
+      <h3>Fitness Plan</h3>
+      <p id="fitnessPlan"></p>
+    </div>
+    <div>
+      <h3>Food Plan</h3>
+      <p id="foodPlan"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function fetchRecommendations() {
+    const cycleStartDate = document.getElementById('cycleStartDate').value;
+    const cycleLength = document.getElementById('cycleLength').value;
+    const characteristics = document.getElementById('characteristics').value;
+
+    try {
+      const response = await fetch('/api/getRecommendations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cycleStartDate, cycleLength, characteristics })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('fitnessPlan').innerText = data.fitnessPlan;
+        document.getElementById('foodPlan').innerText = data.foodPlan;
+        document.getElementById('recommendations').style.display = 'block';
+      } else {
+        alert('Failed to fetch recommendations. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+      alert('An error occurred. Please try again.');
+    }
+  }
+</script>
+
+</body>
+</html>
