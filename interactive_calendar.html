@@ -18,12 +18,13 @@
             cursor: pointer;
             text-align: center;
             color: #000;
+            background-color: #ffe6f2;
         }
         .day:hover {
-            background-color: #ccc;
+            background-color: #ffc5c5;
         }
         .selected {
-            background-color: #aaa;
+            background-color: #ff99cc;
         }
         .arrow-button {
             cursor: pointer;
@@ -34,28 +35,61 @@
         body {
             background-color: #f0f0f0;
         }
+        .info-section {
+            background-color: #ffe6f2;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .info-section h2 {
+            color: #ff69b4;
+        }
+        .info-section p {
+            color: #666;
+        }
+        .error-message {
+            color: #ff0000;
+        }
     </style>
 </head>
 <body>
-    <h1 class="text-3xl text-center p-4" style="color: #000;">Menstrual Cycle Tracker</h1>
+    <h1 class="text-3xl text-center p-4" style="color: #ff69b4;">Menstrual Cycle Tracker</h1>
     <div class="flex justify-between p-4">
-        <div class="arrow-button" id="prev-month" style="color: #000;">&#60;</div>
-        <div id="month-year" style="color: #000;"></div>
-        <div class="arrow-button" id="next-month" style="color: #000;">&#62;</div>
+        <div class="arrow-button" id="prev-month" style="color: #ff69b4;">&#60;</div>
+        <div id="month-year" style="color: #ff69b4;"></div>
+        <div class="arrow-button" id="next-month" style="color: #ff69b4;">&#62;</div>
     </div>
+    <p class="text-lg text-center p-4">Please highlight your most recent period days:</p>
     <div class="calendar" id="calendar"></div>
     <div class="flex p-4">
         <div class="mr-4">
             <label for="cycle-length" class="block text-sm font-medium text-gray-700">Average Cycle Length (days):</label>
-            <input type="number" id="cycle-length" class="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" value="28" required>
+            <input type="number" id="cycle-length" class="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm" value="28" required>
         </div>
-        <button id="generate-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Generate</button>
+        <button id="generate-button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">Generate</button>
+        <button id="clear-button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded ml-2">Clear</button>
     </div>
-    <textarea id="menstrual-cycle-info" class="w-full p-4 mt-4" placeholder="Menstrual cycle info will appear here" readonly style="color: #000; width: 100%; height: 100px;"></textarea>
-    <textarea id="period-length-info" class="w-full p-4 mt-4" placeholder="Period length info will appear here" readonly style="color: #000; width: 100%; height: 100px;"></textarea>
-    <textarea id="hormone-info" class="w-full p-4 mt-4" placeholder="Hormone info will appear here" readonly style="color: #000; width: 100%; height: 150px;"></textarea>
-    <textarea id="food-recommendations" class="w-full p-4 mt-4" placeholder="Food recommendations will appear here" readonly style="color: #000; width: 100%; height: 200px;"></textarea>
-    <textarea id="exercise-recommendations" class="w-full p-4 mt-4" placeholder="Exercise recommendations will appear here" readonly style="color: #000; width: 100%; height: 200px;"></textarea>
+    <p id="error-message" class="error-message text-lg text-center p-4"></p>
+    <div class="info-section" id="menstrual-cycle-info">
+        <h2>Menstrual Cycle Info</h2>
+        <p id="menstrual-cycle-info-text"></p>
+    </div>
+    <div class="info-section" id="period-length-info">
+        <h2>Period Length Info</h2>
+        <p id="period-length-info-text"></p>
+    </div>
+    <div class="info-section" id="hormone-info">
+        <h2>Hormone Info</h2>
+        <p id="hormone-info-text"></p>
+    </div>
+    <div class="info-section" id="food-recommendations">
+        <h2>Food Recommendations</h2>
+        <p id="food-recommendations-text"></p>
+    </div>
+    <div class="info-section" id="exercise-recommendations">
+        <h2>Exercise Recommendations</h2>
+        <p id="exercise-recommendations-text"></p>
+    </div>
 
     <script>
         // Get the calendar element
@@ -64,16 +98,19 @@
         const nextMonthButton = document.getElementById('next-month');
         const monthYearDisplay = document.getElementById('month-year');
         const generateButton = document.getElementById('generate-button');
+        const clearButton = document.getElementById('clear-button');
         const cycleLengthInput = document.getElementById('cycle-length');
-        const menstrualCycleInfoTextarea = document.getElementById('menstrual-cycle-info');
-        const periodLengthInfoTextarea = document.getElementById('period-length-info');
-        const hormoneInfoTextarea = document.getElementById('hormone-info');
-        const foodRecommendationsTextarea = document.getElementById('food-recommendations');
-        const exerciseRecommendationsTextarea = document.getElementById('exercise-recommendations');
+        const menstrualCycleInfoText = document.getElementById('menstrual-cycle-info-text');
+        const periodLengthInfoText = document.getElementById('period-length-info-text');
+        const hormoneInfoText = document.getElementById('hormone-info-text');
+        const foodRecommendationsText = document.getElementById('food-recommendations-text');
+        const exerciseRecommendationsText = document.getElementById('exercise-recommendations-text');
+        const errorMessage = document.getElementById('error-message');
 
         // Create a 2D array to represent the calendar
         let days = [];
         let currentDate = new Date();
+        let selectedDays = [];
 
         // Function to render the calendar
         function renderCalendar() {
@@ -99,7 +136,7 @@
                 const day = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
                 week.push({
                     date: day,
-                    selected: false,
+                    selected: selectedDays.some(selectedDay => selectedDay.getTime() === day.getTime()),
                     element: null
                 });
                 if (week.length === 7) {
@@ -122,8 +159,16 @@
                         dayElement.classList.add('day');
                         dayElement.textContent = day.date.getDate();
                         day.element = dayElement;
+                        if (day.selected) {
+                            dayElement.classList.add('selected');
+                        }
                         dayElement.addEventListener('click', () => {
                             // Toggle the day selection
+                            if (day.selected) {
+                                selectedDays = selectedDays.filter(selectedDay => selectedDay.getTime() !== day.date.getTime());
+                            } else {
+                                selectedDays.push(day.date);
+                            }
                             day.selected = !day.selected;
                             if (day.selected) {
                                 dayElement.classList.add('selected');
@@ -146,18 +191,28 @@
 
         // Generate menstrual cycle info
         function generateMenstrualCycleInfo() {
-            const selectedDays = days.flat().filter(day => day && day.selected);
             if (selectedDays.length === 0) {
-                menstrualCycleInfoTextarea.value = '';
-                periodLengthInfoTextarea.value = '';
-                hormoneInfoTextarea.value = '';
-                foodRecommendationsTextarea.value = '';
-                exerciseRecommendationsTextarea.value = '';
+                menstrualCycleInfoText.textContent = '';
+                periodLengthInfoText.textContent = '';
+                hormoneInfoText.textContent = '';
+                foodRecommendationsText.textContent = '';
+                exerciseRecommendationsText.textContent = '';
+                errorMessage.textContent = '';
                 return;
             }
 
-            const firstDay = selectedDays[0].date;
-            const lastDay = selectedDays[selectedDays.length - 1].date;
+            // Check if the selected days are consecutive
+            selectedDays.sort((a, b) => a - b);
+            for (let i = 0; i < selectedDays.length - 1; i++) {
+                if (selectedDays[i + 1] - selectedDays[i] > 86400000) {
+                    errorMessage.textContent = 'Please select consecutive days.';
+                    return;
+                }
+            }
+            errorMessage.textContent = '';
+
+            const firstDay = selectedDays[0];
+            const lastDay = selectedDays[selectedDays.length - 1];
             const periodLength = Math.floor((lastDay - firstDay) / (1000 * 60 * 60 * 24)) + 1;
 
             const today = new Date();
@@ -176,16 +231,16 @@
 
             const cycleLength = parseInt(cycleLengthInput.value);
             if (isNaN(cycleLength)) {
-                menstrualCycleInfoTextarea.value = 'Please enter a valid cycle length.';
+                menstrualCycleInfoText.textContent = 'Please enter a valid cycle length.';
                 return;
             }
 
-            menstrualCycleInfoTextarea.value = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}. Your average cycle length is ${cycleLength} days.`;
-            periodLengthInfoTextarea.value = `Your period lasted for ${periodLength} days.`;
+            menstrualCycleInfoText.textContent = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}. Your average cycle length is ${cycleLength} days.`;
+            periodLengthInfoText.textContent = `Your period lasted for ${periodLength} days.`;
 
             if (phase === 'Menstruation') {
-                hormoneInfoTextarea.value = 'During menstruation, your estrogen and progesterone levels are at their lowest. Your body is shedding the lining of the uterus, and you may experience symptoms such as cramping, bloating, and mood swings.';
-                foodRecommendationsTextarea.value = 'During menstruation, it is recommended to eat foods that are high in iron, such as:\n' +
+                hormoneInfoText.textContent = 'During menstruation, your estrogen and progesterone levels are at their lowest. Your body is shedding the lining of the uterus, and you may experience symptoms such as cramping, bloating, and mood swings.';
+                foodRecommendationsText.textContent = 'During menstruation, it is recommended to eat foods that are high in iron, such as:\n' +
                     '- Red meat\n' +
                     '- Spinach\n' +
                     '- Beans\n' +
@@ -193,7 +248,7 @@
                     '- Salmon\n' +
                     '- Walnuts\n' +
                     'can help reduce inflammation and alleviate symptoms such as cramping and bloating.';
-                exerciseRecommendationsTextarea.value = 'During menstruation, it is recommended to engage in gentle exercises, such as:\n' +
+                exerciseRecommendationsText.textContent = 'During menstruation, it is recommended to engage in gentle exercises, such as:\n' +
                     '- Yoga\n' +
                     '- Walking\n' +
                     'Avoid high-intensity exercises, such as:\n' +
@@ -201,30 +256,30 @@
                     '- Weightlifting\n' +
                     'as they can exacerbate symptoms.';
             } else if (phase === 'Follicular phase') {
-                hormoneInfoTextarea.value = 'During the follicular phase, your estrogen levels are increasing, causing the follicles in your ovaries to grow and mature. You may experience symptoms such as increased energy, improved mood, and a sense of well-being.';
-                foodRecommendationsTextarea.value = 'During the follicular phase, it is recommended to eat foods that are high in antioxidants, such as:\n' +
+                hormoneInfoText.textContent = 'During the follicular phase, your estrogen levels are increasing, causing the follicles in your ovaries to grow and mature. You may experience symptoms such as increased energy, improved mood, and a sense of well-being.';
+                foodRecommendationsText.textContent = 'During the follicular phase, it is recommended to eat foods that are high in antioxidants, such as:\n' +
                     '- Berries\n' +
                     '- Leafy greens\n' +
                     'Additionally, foods that are high in protein, such as:\n' +
                     '- Lean meats\n' +
                     '- Eggs\n' +
                     'can help support the production of estrogen.';
-                exerciseRecommendationsTextarea.value = 'During the follicular phase, it is recommended to engage in moderate-intensity exercises, such as:\n' +
+                exerciseRecommendationsText.textContent = 'During the follicular phase, it is recommended to engage in moderate-intensity exercises, such as:\n' +
                     '- Jogging\n' +
                     '- Cycling\n' +
                     'Avoid high-intensity exercises, such as:\n' +
                     '- Weightlifting\n' +
                     'as they can disrupt the balance of hormones.';
             } else if (phase === 'Ovulation') {
-                hormoneInfoTextarea.value = 'During ovulation, your estrogen levels peak, causing the release of an egg from the ovary. You may experience symptoms such as increased libido, improved mood, and a sense of confidence.';
-                foodRecommendationsTextarea.value = 'During ovulation, it is recommended to eat foods that are high in healthy fats, such as:\n' +
+                hormoneInfoText.textContent = 'During ovulation, your estrogen levels peak, causing the release of an egg from the ovary. You may experience symptoms such as increased libido, improved mood, and a sense of confidence.';
+                foodRecommendationsText.textContent = 'During ovulation, it is recommended to eat foods that are high in healthy fats, such as:\n' +
                     '- Avocados\n' +
                     '- Nuts\n' +
                     'Additionally, foods that are high in fiber, such as:\n' +
                     '- Whole grains\n' +
                     '- Fruits\n' +
                     'can help support the health of the reproductive system.';
-                exerciseRecommendationsTextarea.value = 'During ovulation, it is recommended to engage in high-intensity exercises, such as:\n' +
+                exerciseRecommendationsText.textContent = 'During ovulation, it is recommended to engage in high-intensity exercises, such as:\n' +
                     '- Weightlifting\n' +
                     '- High-intensity interval training\n' +
                     'Avoid low-intensity exercises, such as:\n' +
@@ -232,15 +287,15 @@
                     '- Walking\n' +
                     'as they may not provide enough stimulation to support the production of hormones.';
             } else {
-                hormoneInfoTextarea.value = 'During the luteal phase, your progesterone levels are increasing, causing the uterine lining to thicken and prepare for a potential pregnancy. You may experience symptoms such as breast tenderness, mood swings, and fatigue.';
-                foodRecommendationsTextarea.value = 'During the luteal phase, it is recommended to eat foods that are high in complex carbohydrates, such as:\n' +
+                hormoneInfoText.textContent = 'During the luteal phase, your progesterone levels are increasing, causing the uterine lining to thicken and prepare for a potential pregnancy. You may experience symptoms such as breast tenderness, mood swings, and fatigue.';
+                foodRecommendationsText.textContent = 'During the luteal phase, it is recommended to eat foods that are high in complex carbohydrates, such as:\n' +
                     '- Whole grains\n' +
                     '- Sweet potatoes\n' +
                     'Additionally, foods that are high in healthy fats, such as:\n' +
                     '- Nuts\n' +
                     '- Seeds\n' +
                     'can help support the health of the reproductive system.';
-                exerciseRecommendationsTextarea.value = 'During the luteal phase, it is recommended to engage in low-to-moderate intensity exercises, such as:\n' +
+                exerciseRecommendationsText.textContent = 'During the luteal phase, it is recommended to engage in low-to-moderate intensity exercises, such as:\n' +
                     '- Yoga\n' +
                     '- Swimming\n' +
                     'Avoid high-intensity exercises, such as:\n' +
@@ -248,6 +303,19 @@
                     '- High-intensity interval training\n' +
                     'as they can disrupt the balance of hormones.';
             }
+        }
+
+        // Clear all data
+        function clearData() {
+            selectedDays = [];
+            menstrualCycleInfoText.textContent = '';
+            periodLengthInfoText.textContent = '';
+            hormoneInfoText.textContent = '';
+            foodRecommendationsText.textContent = '';
+            exerciseRecommendationsText.textContent = '';
+            errorMessage.textContent = '';
+            cycleLengthInput.value = '28';
+            renderCalendar();
         }
 
         // Add event listeners to the arrow buttons
@@ -262,6 +330,9 @@
 
         // Add event listener to the generate button
         generateButton.addEventListener('click', generateMenstrualCycleInfo);
+
+        // Add event listener to the clear button
+        clearButton.addEventListener('click', clearData);
 
         // Render the calendar for the first time
         renderCalendar();
