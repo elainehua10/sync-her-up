@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Calendar</title>
+    <title>Menstrual Cycle Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Add some basic styling to our calendar */
@@ -37,15 +37,21 @@
     </style>
 </head>
 <body>
-    <h1 class="text-3xl text-center p-4" style="color: #000;">Interactive Calendar</h1>
+    <h1 class="text-3xl text-center p-4" style="color: #000;">Menstrual Cycle Tracker</h1>
     <div class="flex justify-between p-4">
         <div class="arrow-button" id="prev-month" style="color: #000;">&#60;</div>
         <div id="month-year" style="color: #000;"></div>
         <div class="arrow-button" id="next-month" style="color: #000;">&#62;</div>
     </div>
     <div class="calendar" id="calendar"></div>
-    <textarea id="selected-days" class="w-full p-4 mt-4" placeholder="Selected days will appear here" readonly style="color: #000;"></textarea>
+    <div class="p-4">
+        <label for="cycle-length" class="block text-sm font-medium text-gray-700">Average Cycle Length (days):</label>
+        <input type="number" id="cycle-length" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+    </div>
+    <button id="generate-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style="margin-top: 20px;">Generate</button>
     <textarea id="menstrual-cycle-info" class="w-full p-4 mt-4" placeholder="Menstrual cycle info will appear here" readonly style="color: #000;"></textarea>
+    <textarea id="period-length-info" class="w-full p-4 mt-4" placeholder="Period length info will appear here" readonly style="color: #000;"></textarea>
+    <textarea id="hormone-info" class="w-full p-4 mt-4" placeholder="Hormone info will appear here" readonly style="color: #000;"></textarea>
 
     <script>
         // Get the calendar element
@@ -53,8 +59,11 @@
         const prevMonthButton = document.getElementById('prev-month');
         const nextMonthButton = document.getElementById('next-month');
         const monthYearDisplay = document.getElementById('month-year');
-        const selectedDaysTextarea = document.getElementById('selected-days');
+        const generateButton = document.getElementById('generate-button');
+        const cycleLengthInput = document.getElementById('cycle-length');
         const menstrualCycleInfoTextarea = document.getElementById('menstrual-cycle-info');
+        const periodLengthInfoTextarea = document.getElementById('period-length-info');
+        const hormoneInfoTextarea = document.getElementById('hormone-info');
 
         // Create a 2D array to represent the calendar
         let days = [];
@@ -115,8 +124,6 @@
                             } else {
                                 dayElement.classList.remove('selected');
                             }
-                            updateSelectedDays();
-                            updateMenstrualCycleInfo();
                         });
                         calendar.appendChild(dayElement);
                     } else {
@@ -131,29 +138,22 @@
             monthYearDisplay.textContent = currentDate.toLocaleString('default', { month: 'long' }) + ' ' + currentDate.getFullYear();
         }
 
-        // Update the selected days textarea
-        function updateSelectedDays() {
-            const selectedDays = days.flat().filter(day => day && day.selected);
-            const formattedDays = selectedDays.map(day => {
-                const month = String(day.date.getMonth() + 1).padStart(2, '0');
-                const dayOfMonth = String(day.date.getDate()).padStart(2, '0');
-                const year = day.date.getFullYear();
-                return `${month}-${dayOfMonth}-${year}`;
-            });
-            selectedDaysTextarea.value = formattedDays.join(', ');
-        }
-
-        // Update the menstrual cycle info textarea
-        function updateMenstrualCycleInfo() {
+        // Generate menstrual cycle info
+        function generateMenstrualCycleInfo() {
             const selectedDays = days.flat().filter(day => day && day.selected);
             if (selectedDays.length === 0) {
                 menstrualCycleInfoTextarea.value = '';
+                periodLengthInfoTextarea.value = '';
+                hormoneInfoTextarea.value = '';
                 return;
             }
 
-            const lastPeriodDate = selectedDays[0].date;
+            const firstDay = selectedDays[0].date;
+            const lastDay = selectedDays[selectedDays.length - 1].date;
+            const periodLength = Math.floor((lastDay - firstDay) / (1000 * 60 * 60 * 24)) + 1;
+
             const today = new Date();
-            const cycleDay = Math.floor((today - lastPeriodDate) / (1000 * 60 * 60 * 24)) + 1;
+            const cycleDay = Math.floor((today - firstDay) / (1000 * 60 * 60 * 24)) + 1;
 
             let phase;
             if (cycleDay <= 5) {
@@ -166,7 +166,24 @@
                 phase = 'Luteal phase';
             }
 
-            menstrualCycleInfoTextarea.value = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}.`;
+            const cycleLength = parseInt(cycleLengthInput.value);
+            if (isNaN(cycleLength)) {
+                menstrualCycleInfoTextarea.value = 'Please enter a valid cycle length.';
+                return;
+            }
+
+            menstrualCycleInfoTextarea.value = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}. Your average cycle length is ${cycleLength} days.`;
+            periodLengthInfoTextarea.value = `Your period lasted for ${periodLength} days.`;
+
+            if (phase === 'Menstruation') {
+                hormoneInfoTextarea.value = 'During menstruation, your estrogen and progesterone levels are at their lowest. Your body is shedding the lining of the uterus, and you may experience symptoms such as cramping, bloating, and mood swings.';
+            } else if (phase === 'Follicular phase') {
+                hormoneInfoTextarea.value = 'During the follicular phase, your estrogen levels are increasing, causing the follicles in your ovaries to grow and mature. You may experience symptoms such as increased energy, improved mood, and a sense of well-being.';
+            } else if (phase === 'Ovulation') {
+                hormoneInfoTextarea.value = 'During ovulation, your estrogen levels peak, causing the release of an egg from the ovary. You may experience symptoms such as increased libido, improved mood, and a sense of confidence.';
+            } else {
+                hormoneInfoTextarea.value = 'During the luteal phase, your progesterone levels are increasing, causing the uterine lining to thicken and prepare for a potential pregnancy. You may experience symptoms such as breast tenderness, mood swings, and fatigue.';
+            }
         }
 
         // Add event listeners to the arrow buttons
@@ -178,6 +195,9 @@
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar();
         });
+
+        // Add event listener to the generate button
+        generateButton.addEventListener('click', generateMenstrualCycleInfo);
 
         // Render the calendar for the first time
         renderCalendar();
