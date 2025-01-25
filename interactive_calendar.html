@@ -67,6 +67,7 @@
         }
         .info-section p {
             color: #666;
+            white-space: pre-wrap;
         }
         .error-message {
             color: #ff0000;
@@ -217,6 +218,10 @@
                             if (day.selected) {
                                 selectedDays = selectedDays.filter(selectedDay => selectedDay.getTime() !== day.date.getTime());
                             } else {
+                                if (day.date > new Date()) {
+                                    errorMessage.textContent = 'You cannot select days in the future.';
+                                    return;
+                                }
                                 selectedDays.push(day.date);
                             }
                             day.selected = !day.selected;
