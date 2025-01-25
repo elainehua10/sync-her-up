@@ -17,29 +17,35 @@
             border-radius: 5px;
             cursor: pointer;
             text-align: center;
+            color: #000;
         }
         .day:hover {
-            background-color: #333;
+            background-color: #ccc;
         }
         .selected {
-            background-color: #444;
+            background-color: #aaa;
         }
         .arrow-button {
             cursor: pointer;
             font-size: 24px;
             font-weight: bold;
+            color: #000;
+        }
+        body {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100">
-    <h1 class="text-3xl text-center p-4">Interactive Calendar</h1>
+<body>
+    <h1 class="text-3xl text-center p-4" style="color: #000;">Interactive Calendar</h1>
     <div class="flex justify-between p-4">
-        <div class="arrow-button" id="prev-month">&#60;</div>
-        <div id="month-year"></div>
-        <div class="arrow-button" id="next-month">&#62;</div>
+        <div class="arrow-button" id="prev-month" style="color: #000;">&#60;</div>
+        <div id="month-year" style="color: #000;"></div>
+        <div class="arrow-button" id="next-month" style="color: #000;">&#62;</div>
     </div>
     <div class="calendar" id="calendar"></div>
-    <textarea id="selected-days" class="w-full p-4 mt-4" placeholder="Selected days will appear here" readonly></textarea>
+    <textarea id="selected-days" class="w-full p-4 mt-4" placeholder="Selected days will appear here" readonly style="color: #000;"></textarea>
+    <textarea id="menstrual-cycle-info" class="w-full p-4 mt-4" placeholder="Menstrual cycle info will appear here" readonly style="color: #000;"></textarea>
 
     <script>
         // Get the calendar element
@@ -48,6 +54,7 @@
         const nextMonthButton = document.getElementById('next-month');
         const monthYearDisplay = document.getElementById('month-year');
         const selectedDaysTextarea = document.getElementById('selected-days');
+        const menstrualCycleInfoTextarea = document.getElementById('menstrual-cycle-info');
 
         // Create a 2D array to represent the calendar
         let days = [];
@@ -109,6 +116,7 @@
                                 dayElement.classList.remove('selected');
                             }
                             updateSelectedDays();
+                            updateMenstrualCycleInfo();
                         });
                         calendar.appendChild(dayElement);
                     } else {
@@ -133,6 +141,32 @@
                 return `${month}-${dayOfMonth}-${year}`;
             });
             selectedDaysTextarea.value = formattedDays.join(', ');
+        }
+
+        // Update the menstrual cycle info textarea
+        function updateMenstrualCycleInfo() {
+            const selectedDays = days.flat().filter(day => day && day.selected);
+            if (selectedDays.length === 0) {
+                menstrualCycleInfoTextarea.value = '';
+                return;
+            }
+
+            const lastPeriodDate = selectedDays[0].date;
+            const today = new Date();
+            const cycleDay = Math.floor((today - lastPeriodDate) / (1000 * 60 * 60 * 24)) + 1;
+
+            let phase;
+            if (cycleDay <= 5) {
+                phase = 'Menstruation';
+            } else if (cycleDay <= 14) {
+                phase = 'Follicular phase';
+            } else if (cycleDay <= 21) {
+                phase = 'Ovulation';
+            } else {
+                phase = 'Luteal phase';
+            }
+
+            menstrualCycleInfoTextarea.value = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}.`;
         }
 
         // Add event listeners to the arrow buttons
