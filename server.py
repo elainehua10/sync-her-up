@@ -39,24 +39,24 @@ oauth.register(
 @app.route("/login")
 def login():
     return oauth.auth0.authorize_redirect(
-        redirect_uri=url_for("callback", _external=True, _scheme='https', _host='syncherup.co')
+        redirect_uri=url_for("callback", _external=True)
     )
 
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
-    return redirect("https://syncherup.co/")
+    return redirect("https://syncherupco.netlify.app/")
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(
-        f"https://{env.get('AUTH0_DOMAIN')}"
+        "https://" + env.get("AUTH0_DOMAIN")
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": "https://syncherup.co",
+                "returnTo": url_for("home", _external=True),
                 "client_id": env.get("AUTH0_CLIENT_ID"),
             },
             quote_via=quote_plus,
