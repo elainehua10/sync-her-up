@@ -1,2 +1,2 @@
 # sync-her
-Our InnovateHer Hackathon project
+Our InnovateHer Hackathon project.
