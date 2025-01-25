@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Period Tracker App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-white py-4 shadow-md">
+        <nav class="container mx-auto flex justify-between">
+            <h1 class="text-2xl font-bold">Period Tracker App</h1>
+            <button class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">Get Started</button>
+        </nav>
+    </header>
+    <main class="container mx-auto p-4 pt-6 md:p-6 lg:p-12 xl:p-24">
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-4">Enter Your Cycle Info</h2>
+            <form>
+                <div class="mb-4">
+                    <label for="cycle-length" class="block text-sm font-medium mb-2">Cycle Length (days)</label>
+                    <input type="number" id="cycle-length" class="block w-full p-2 pl-10 text-sm text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                </div>
+                <div class="mb-4">
+                    <label for="period-date" class="block text-sm font-medium mb-2">Last Period Date</label>
+                    <input type="date" id="period-date" class="block w-full p-2 pl-10 text-sm text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                </div>
+                <button class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+            </form>
+        </section>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-4">Food and Workout Recommendations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-white p-4 shadow-md rounded-md">
+                    <h3 class="text-xl font-bold mb-2">Foods to Eat</h3>
+                    <ul>
+                        <li>Leafy Greens</li>
+                        <li>Berries</li>
+                        <li>Nuts and Seeds</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 shadow-md rounded-md">
+                    <h3 class="text-xl font-bold mb-2">Foods to Avoid</h3>
+                    <ul>
+                        <li>Processed Meats</li>
+                        <li>Refined Sugars</li>
+                        <li>Dairy Products</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 shadow-md rounded-md">
+                    <h3 class="text-xl font-bold mb-2">Workout Routine</h3>
+                    <ul>
+                        <li>Yoga</li>
+                        <li>Brisk Walking</li>
+                        <li>Swimming</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-4">Hormone Changes</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-white p-4 shadow-md rounded-md">
+                    <h3 class="text-xl font-bold mb-2">Estrogen</h3>
+                    <p>Estrogen levels increase during the follicular phase, promoting the growth of the uterine lining.</p>
+                </div>
+                <div class="bg-white p-4 shadow-md rounded-md">
+                    <h3 class="text-xl font-bold mb-2">Progesterone</h3>
+                    <p>Progesterone levels increase during the luteal phase, preparing the uterine lining for a potential pregnancy.</p>
+                </div>
+                <div class="bg-white p-4 shadow-md rounded-md">
+                    <h3 class="text-xl font-bold mb-2">Testosterone</h3>
+                    <p>Testosterone levels remain relatively stable throughout the menstrual cycle, but may increase slightly during the follicular phase.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Use the Grok API to fetch food and workout recommendations
+        fetch('https://api.grok.com/recommendations')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Update the food and workout recommendations sections with the fetched data
+            });
+    </script>
+</body>
+</html>
