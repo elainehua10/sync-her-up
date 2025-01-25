@@ -96,6 +96,185 @@
     <button onclick="fetchRecommendations()">Get Fitness & Food Plan</button>
   </div>
 
+<script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Add some basic styling to our calendar */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+        }
+        .day {
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            color: #000;
+        }
+        .day:hover {
+            background-color: #ccc;
+        }
+        .selected {
+            background-color: #aaa;
+        }
+        .arrow-button {
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        body {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-3xl text-center p-4" style="color: #000;">Interactive Calendar</h1>
+    <div class="flex justify-between p-4">
+        <div class="arrow-button" id="prev-month" style="color: #000;">&#60;</div>
+        <div id="month-year" style="color: #000;"></div>
+        <div class="arrow-button" id="next-month" style="color: #000;">&#62;</div>
+    </div>
+    <div class="calendar" id="calendar"></div>
+    <textarea id="selected-days" class="w-full p-4 mt-4" placeholder="Selected days will appear here" readonly style="color: #000;"></textarea>
+    <textarea id="menstrual-cycle-info" class="w-full p-4 mt-4" placeholder="Menstrual cycle info will appear here" readonly style="color: #000;"></textarea>
+
+    <script>
+        // Get the calendar element
+        const calendar = document.getElementById('calendar');
+        const prevMonthButton = document.getElementById('prev-month');
+        const nextMonthButton = document.getElementById('next-month');
+        const monthYearDisplay = document.getElementById('month-year');
+        const selectedDaysTextarea = document.getElementById('selected-days');
+        const menstrualCycleInfoTextarea = document.getElementById('menstrual-cycle-info');
+
+        // Create a 2D array to represent the calendar
+        let days = [];
+        let currentDate = new Date();
+
+        // Function to render the calendar
+        function renderCalendar() {
+            // Clear the calendar
+            calendar.innerHTML = '';
+
+            // Get the first day of the month
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+            // Get the last day of the month
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+            // Get the day of the week of the first day
+            const firstDayOfWeek = firstDay.getDay();
+
+            // Create a 2D array to represent the calendar
+            days = [];
+            let week = [];
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                week.push(null);
+            }
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const day = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+                week.push({
+                    date: day,
+                    selected: false,
+                    element: null
+                });
+                if (week.length === 7) {
+                    days.push(week);
+                    week = [];
+                }
+            }
+            if (week.length > 0) {
+                while (week.length < 7) {
+                    week.push(null);
+                }
+                days.push(week);
+            }
+
+            // Render the calendar
+            days.forEach(week => {
+                week.forEach(day => {
+                    if (day) {
+                        const dayElement = document.createElement('div');
+                        dayElement.classList.add('day');
+                        dayElement.textContent = day.date.getDate();
+                        day.element = dayElement;
+                        dayElement.addEventListener('click', () => {
+                            // Toggle the day selection
+                            day.selected = !day.selected;
+                            if (day.selected) {
+                                dayElement.classList.add('selected');
+                            } else {
+                                dayElement.classList.remove('selected');
+                            }
+                            updateSelectedDays();
+                            updateMenstrualCycleInfo();
+                        });
+                        calendar.appendChild(dayElement);
+                    } else {
+                        const emptyDay = document.createElement('div');
+                        emptyDay.classList.add('day');
+                        calendar.appendChild(emptyDay);
+                    }
+                });
+            });
+
+            // Update the month and year display
+            monthYearDisplay.textContent = currentDate.toLocaleString('default', { month: 'long' }) + ' ' + currentDate.getFullYear();
+        }
+
+        // Update the selected days textarea
+        function updateSelectedDays() {
+            const selectedDays = days.flat().filter(day => day && day.selected);
+            const formattedDays = selectedDays.map(day => {
+                const month = String(day.date.getMonth() + 1).padStart(2, '0');
+                const dayOfMonth = String(day.date.getDate()).padStart(2, '0');
+                const year = day.date.getFullYear();
+                return `${month}-${dayOfMonth}-${year}`;
+            });
+            selectedDaysTextarea.value = formattedDays.join(', ');
+        }
+
+        // Update the menstrual cycle info textarea
+        function updateMenstrualCycleInfo() {
+            const selectedDays = days.flat().filter(day => day && day.selected);
+            if (selectedDays.length === 0) {
+                menstrualCycleInfoTextarea.value = '';
+                return;
+            }
+
+            const lastPeriodDate = selectedDays[0].date;
+            const today = new Date();
+            const cycleDay = Math.floor((today - lastPeriodDate) / (1000 * 60 * 60 * 24)) + 1;
+
+            let phase;
+            if (cycleDay <= 5) {
+                phase = 'Menstruation';
+            } else if (cycleDay <= 14) {
+                phase = 'Follicular phase';
+            } else if (cycleDay <= 21) {
+                phase = 'Ovulation';
+            } else {
+                phase = 'Luteal phase';
+            }
+
+            menstrualCycleInfoTextarea.value = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}.`;
+        }
+
+        // Add event listeners to the arrow buttons
+        prevMonthButton.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+        nextMonthButton.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        // Render the calendar for the first time
+        renderCalendar();
+    </script>
+
   <div id="recommendations" class="card" style="display: none;">
     <h2>Your Recommendations</h2>
     <div>
