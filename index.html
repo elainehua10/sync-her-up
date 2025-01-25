@@ -11,6 +11,21 @@
       padding: 0;
       background-color: #f9f9f9;
     }
+    .navbar {
+      background-color: #007BFF;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .navbar a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .navbar a:hover {
+      text-decoration: underline;
+    }
     .container {
       max-width: 600px;
       margin: 2rem auto;
@@ -55,7 +70,18 @@
 </head>
 <body>
 
+<div class="navbar">
+  <a href="main_menu.html">Home</a>
+  <a href="#tracker">Tracker</a>
+  <a href="#about">About</a>
+</div>
+
 <div class="container">
+  <h1>Welcome to the Menstrual Cycle Tracker</h1>
+  <p>Track your menstrual cycle and get personalized fitness and food plans tailored to your needs. Use the tracker below to input your details and receive recommendations!</p>
+</div>
+
+<div class="container" id="tracker">
   <h1>Menstrual Cycle Tracker</h1>
   <div class="card">
     <label for="cycleStartDate">Cycle Start Date</label>
@@ -81,6 +107,11 @@
       <p id="foodPlan"></p>
     </div>
   </div>
+</div>
+
+<div class="container" id="about">
+  <h2>About This Tracker</h2>
+  <p>This menstrual cycle tracker is designed to help individuals better understand their cycles and improve their overall well-being. By tracking your cycle and its characteristics, you can receive customized plans to stay healthy and active throughout your cycle phases.</p>
 </div>
 
 <script>
