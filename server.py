@@ -46,7 +46,7 @@ def login():
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
-    return redirect("https://syncherupco.netlify.app/")
+    return redirect("https://syncherupco.netlify.app/interactive_calendar")
 
 @app.route("/logout")
 def logout():
