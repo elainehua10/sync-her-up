@@ -1,5 +1,5 @@
 # Sync Her Up
-Our InnovateHer Hackathon project.
+Our InnovateHer Hackathon project found here: https://syncherupco.netlify.app/main_menu
 
 ### Inspiration
 According to the WHO, "Worldwide, only 2 out of 5 schools (39%) provide menstrual health education.", and menstruation itself is often a heavily stigmatized topic. This makes managing and learning more about it even more difficult. We wanted to change this by making menstrual cycle plans easier and more accessible to all by creating a friendly UI where users can gain insight on the types of food, exercise, and other information about their period with a few simple steps.
