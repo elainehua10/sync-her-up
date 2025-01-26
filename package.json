@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@auth0/auth0-react": "^2.3.0",
-    "groq-sdk": "^0.12.0"
+    "@tailwindcss/vite": "^4.0.0",
+    "groq-sdk": "^0.12.0",
+    "tailwindcss": "^4.0.0"
   }
 }

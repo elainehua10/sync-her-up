@@ -4,11 +4,7 @@ from groq import Groq
 
 app = Flask(__name__)
 
-# Set the API key as an environment variable
-api_key = "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"
-
-# Initialize the Groq client with the API key
-client = Groq(api_key)
+client = Groq()
 
 @app.route('/calculate-menstrual-phase', methods=['POST'])
 def calculate_menstrual_phase():
@@ -20,8 +16,7 @@ def calculate_menstrual_phase():
     # Convert start and end dates to datetime objects
     start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
-
-    # Calculate menstrual phase
+        # Calculate menstrual phase
     today = datetime.datetime.today()
     cycle_day = (today - start_date).days + 1
     period_length = (end_date - start_date).days + 1
@@ -41,7 +36,7 @@ def calculate_menstrual_phase():
         messages=[
             {
                 "role": "user",
-                "content": f"Provide detailed recommendations for the {phase} phase of the menstrual cycle. Break down into clear, separate sections: 1. Describe the hormonal changes happening in this phase, 2. List specific nutrition recommendations, 3. Outline the best exercise approaches."
+                "content": f"Provide detailed recommendations for the {phase} phase of the menstrual cycle. Break down into clear, separate sections: 1. Describe the hormonal changes happening in this phase, 2. List specific nutrition recommendations, 3. Outline the best exercise approaches"
             },
             {
                 "role": "assistant",
@@ -77,7 +72,7 @@ def calculate_menstrual_phase():
         'exerciseRecommendations': exercise_recommendations
     }
 
-    return jsonify(completion)
+    return jsonify(output)
 
 if __name__ == '__main__':
     app.run(debug=True)
