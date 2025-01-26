@@ -33,12 +33,9 @@
       padding: 1rem;
       background: #ff69b4;
       border-radius: 12px;
-      box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.1);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      text-align: center;
     }
+
     h1, h2 {
       color: #333;
     }
@@ -73,6 +70,37 @@
       border-radius: 8px;
       margin-bottom: 1rem;
     }
+
+    .button {
+      display: block; 
+      width: fit-content; 
+      margin: 2rem auto; 
+      background-color: #ff69b4;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      margin: 1rem auto;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #ff85c1;
+    }
+
+    #rcorners1 {
+      border-radius: 25px;
+      background: #fff;
+      padding: 20px; 
+      max-width: 80%;
+      margin: 2rem auto; 
+      text-align: center;
+    }
+
   </style>
 </head>
 <body>
@@ -81,11 +109,22 @@
   <a href="groq.js">Tracker</a>
   <a href="#about">About</a>
 </div>
-<div class="container">
-  <h1 style="text-align: center; font-family: 'Raleway'; font-weight: bold; font-size: 40pt; color: white;">Sync Her Up</h1>
-</div>
+
 <div class="Menstrual Cycle Tracker">
   <p style="text-align: center; font-family: 'Raleway'; color: #ff69b4;">a period cycle tracker, with personalized diet and exercise suggestions for you!</p>
 </div>
 
+<div class="container">
+  <h1 style="text-align: center; font-family: 'Raleway'; font-weight: bold; font-size: 40pt; color: white;"><img style='height: 100%; width: 100%; object-fit: contain' id = "logo" src="images\logo.png" alt="sync her up logo">
+  </h1> 
+</div>
+
+<a id ="button" href="login.html" class="button">Get Started!</a>
+
+<p id="rcorners1">
+  Use our user-friendly interface to input in the days of your current menstural cycle to get personalized tips on food and exercise, as well as information about your period!
+</p>
+
 </body>
+
+</html>
