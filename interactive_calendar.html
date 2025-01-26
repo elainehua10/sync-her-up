@@ -126,7 +126,7 @@
         <a href="#about">About</a>
     </div>
     <h1 class="text-3xl text-center p-4" style="color: #ff69b4;">Menstrual Cycle Tracker</h1>
-    <p class="text-sm text-center p-4">Please select the days of your most recent period. You can navigate through the months using the arrow buttons.</p>
+    <p class="text-sm text-center p-4" style="font-family: 'mine'; font-weight: bold;">Please select the days of your most recent period. You can navigate through the months using the arrow buttons.</p>
     <div class="flex justify-between p-4" style="width: 800px; margin: 0 auto;">
         <div class="arrow-button" id="prev-month" style="color: #ff69b4;">&#60;</div>
         <div id="month-year" class="text-3xl" style="color: #ff69b4;"></div>
@@ -174,7 +174,7 @@
 -->
 
     <div class="info-section" id="hormone-info">
-        <h2 style="display: flex; align-items: center; gap: 10px">
+        <h2 style="display: flex; align-items: center; gap: 13px">
             <img src="images/point.png" alt="bunny pointing" style="width: 100px; height: auto;">
             Hormone Info
         </h2>
@@ -328,13 +328,13 @@
 
             let phase;
             if (cycleDay <= 5) {
-                phase = 'Menstruation';
+                phase = 'menstruation phase';
             } else if (cycleDay <= 14) {
-                phase = 'Follicular phase';
+                phase = 'follicular phase';
             } else if (cycleDay <= 21) {
-                phase = 'Ovulation';
+                phase = 'ovulation phase';
             } else {
-                phase = 'Luteal phase';
+                phase = 'luteal phase';
             }
 
             const cycleLength = parseInt(cycleLengthInput.value);
@@ -345,7 +345,7 @@
 
             menstrualCycleInfoText.textContent = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}. Your previous period lasted for ${periodLength} days and your average cycle length is ${cycleLength} days.`;
 
-            if (phase === 'Menstruation') {
+            if (phase === 'menstruation phase') {
                 hormoneInfoText.textContent = 'During menstruation, your estrogen and progesterone levels are at their lowest. Your body is shedding the lining of the uterus, and you may experience symptoms such as cramping, bloating, and mood swings.';
                 foodRecommendationsText.textContent = 'During menstruation, it is recommended to eat foods that are high in iron, such as:\n' +
                     '- Red meat\n' +
@@ -362,7 +362,7 @@
                     '- Running\n' +
                     '- Weightlifting\n' +
                     'as they can exacerbate symptoms.';
-            } else if (phase === 'Follicular phase') {
+            } else if (phase === 'follicular phase') {
                 hormoneInfoText.textContent = 'During the follicular phase, your estrogen levels are increasing, causing the follicles in your ovaries to grow and mature. You may experience symptoms such as increased energy, improved mood, and a sense of well-being.';
                 foodRecommendationsText.textContent = 'During the follicular phase, it is recommended to eat foods that are high in antioxidants, such as:\n' +
                     '- Berries\n' +
@@ -377,7 +377,7 @@
                     'Avoid high-intensity exercises, such as:\n' +
                     '- Weightlifting\n' +
                     'as they can disrupt the balance of hormones.';
-            } else if (phase === 'Ovulation') {
+            } else if (phase === 'ovulation phase') {
                 hormoneInfoText.textContent = 'During ovulation, your estrogen levels peak, causing the release of an egg from the ovary. You may experience symptoms such as increased libido, improved mood, and a sense of confidence.';
                 foodRecommendationsText.textContent = 'During ovulation, it is recommended to eat foods that are high in healthy fats, such as:\n' +
                     '- Avocados\n' +
