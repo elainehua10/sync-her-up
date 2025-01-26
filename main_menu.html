@@ -4,25 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SyncHerUp</title>
-  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'pink';
       margin: 0;
       padding: 0;
-      background-color: #ffe6f2;
+      background-color: #ff69b4;
     }
     .navbar {
       background-color: #ff69b4;
       color: white;
       padding: 1rem;
       text-align: center;
+      letter-spacing: .2rem;
     }
     .navbar a {
       color: white;
-      margin: 0 1rem;
+      margin: 0 2rem;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: thin;
     }
     .navbar a:hover {
       text-decoration: underline;
@@ -79,14 +80,15 @@
       color: white;
       font-size: 1rem;
       font-weight: bold;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 30px;
+      padding: 15px 25px;
+      border-radius: 40px;
+      border: 2px solid #ffe6f2;
       text-align: center;
       text-decoration: none;
       cursor: pointer;
       margin: 1rem auto;
       transition: background-color 0.3s ease;
+      letter-spacing: .2rem;
     }
     .button:hover {
       background-color: #ff85c1;
@@ -94,11 +96,15 @@
 
     #rcorners1 {
       border-radius: 25px;
-      background: #fff;
+      background: #ff69b4;
+      color: white;
       padding: 20px; 
-      max-width: 50%;
+      max-width: 60%;
       margin: 2rem auto; 
       text-align: center;
+      letter-spacing: .1rem;
+      font-family: 'mine';
+      font-size: 19pt;
     }
 
   </style>
@@ -111,7 +117,7 @@
 </div>
 
 <div class="SyncHerUp">
-  <p style="text-align: center; font-family: 'Raleway'; color: #ff69b4;">get in sync with your menstrual cycle!</p>
+  <p style="text-align: center; font-family: 'mine'; font-size: 15pt; color: #ffe6f2;">get in sync with your menstrual cycle!</p>
 </div>
 
 <div class="container">
@@ -119,7 +125,12 @@
   </h1> 
 </div>
 
-<a id ="button" href="interactive_calendar.html" class="button">Get Started!</a>
+<div class="container">
+  <h1 style="text-align: center;"><img src="images/up.png" alt="bunny smiling" style="width: 200px; height: auto;">
+  </h1>
+  <a id ="button" href="interactive_calendar.html" class="button">Get Started!</a>
+</div>
+
 
 <p id="rcorners1">
   Use our user-friendly interface to input in the days of your current menstural cycle to get personalized tips on food and exercise, as well as information about your period!

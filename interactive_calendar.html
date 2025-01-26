@@ -6,8 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SyncHerUp</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* Add some basic styling to our calendar */
+
+        body {
+            font-family: 'pink', 'mine';
+            margin: 0;
+            padding: 0;
+            background-color: #ffe6f2;
+            letter-spacing: .1rem;
+        }
+
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -25,6 +34,7 @@
             color: #000;
             background-color: #ffe6f2;
             border: 1px solid #ddd;
+            letter-spacing: .1rem;
         }
 
         .day:hover {
@@ -47,11 +57,12 @@
             color: white;
             padding: 1rem;
             text-align: center;
+            letter-spacing: .2rem;
         }
 
         .navbar a {
             color: white;
-            margin: 0 1rem;
+            margin: 0 2rem;
             text-decoration: none;
             font-weight: bold;
         }
@@ -80,6 +91,8 @@
         .info-section p {
             color: #666;
             white-space: pre-wrap;
+            font-family: 'mine';
+            font-weight: bold;
         }
 
         .error-message {
@@ -93,7 +106,8 @@
             border: 1px solid #ddd;
             width: 800px;
             margin: 0 auto;
-            background-color: #f0f0f0;
+            background-color: #ef98c2;
+            letter-spacing: .2rem;
         }
 
         .day-of-week {
@@ -112,34 +126,31 @@
         <a href="#about">About</a>
     </div>
     <h1 class="text-3xl text-center p-4" style="color: #ff69b4;">Menstrual Cycle Tracker</h1>
-    <p class="text-lg text-center p-4">Please select the days of your most recent period. You can navigate through the months using the arrow buttons.</p>
+    <p class="text-sm text-center p-4">Please select the days of your most recent period. You can navigate through the months using the arrow buttons.</p>
     <div class="flex justify-between p-4" style="width: 800px; margin: 0 auto;">
         <div class="arrow-button" id="prev-month" style="color: #ff69b4;">&#60;</div>
-        <div id="month-year" style="color: #ff69b4;"></div>
+        <div id="month-year" class="text-3xl" style="color: #ff69b4;"></div>
         <div class="arrow-button" id="next-month" style="color: #ff69b4;">&#62;</div>
     </div>
     <div class="days-of-week">
-        <div class="day-of-week">Sunday</div>
-        <div class="day-of-week">Monday</div>
-        <div class="day-of-week">Tuesday</div>
-        <div class="day-of-week">Wednesday</div>
-        <div class="day-of-week">Thursday</div>
-        <div class="day-of-week">Friday</div>
-        <div class="day-of-week">Saturday</div>
+        <div class="day-of-week">sunday</div>
+        <div class="day-of-week">monday</div>
+        <div class="day-of-week">tuesday</div>
+        <div class="day-of-week">wednesday</div>
+        <div class="day-of-week">thursday</div>
+        <div class="day-of-week">friday</div>
+        <div class="day-of-week">saturday</div>
     </div>
     <div class="calendar" id="calendar"></div>
-    <div class="flex p-4" style="width: 800px; margin: 0 auto;">
-        <div class="mr-4">
-            <label for="cycle-length" class="block text-sm font-medium text-gray-700">Average Cycle Length
-                (days):</label>
-            <input type="number" id="cycle-length"
-                class="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm"
-                value="28" required>
+    <div class="flex justify-between p-4" style="width: 800px; margin: 0 auto;">
+        <div class="input-container">
+            <label for="cycle-length" class="block text-sm font-medium text-gray-700 mr-2">Average Cycle Length (days):</label>
+            <input type="number" id="cycle-length" class="mt-1 block w-12 rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm" value="28" required>
         </div>
-        <button id="generate-button"
-            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">Generate</button>
-        <button id="clear-button"
-            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded ml-2">Clear</button>
+        <div class="flex justify-end">
+            <button id="generate-button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded mr-2">Generate</button>
+            <button id="clear-button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">Clear</button>
+        </div>
     </div>
     <p id="error-message" class="error-message text-lg text-center p-4"></p>
 
@@ -151,30 +162,36 @@
         <p id="menstrual-cycle-info-text"></p>
     </div>
 
-    
+<!--
     <div class="info-section" id="period-length-info">
-        <h2 style="display: flex; align-items: center; gap: 10px"></h2style>
+        <h2 style="display: flex; align-items: center; gap: 10px">
+            </h2style>
             <img src="images/up.png" alt="bunny smiling" style="width: 100px; height: auto;">
-            Period Length Info</h2>
+            Period Length Info
+        </h2>
         <p id="period-length-info-text"></p>
     </div>
+-->
 
     <div class="info-section" id="hormone-info">
         <h2 style="display: flex; align-items: center; gap: 10px">
             <img src="images/point.png" alt="bunny pointing" style="width: 100px; height: auto;">
-            Hormone Info</h2>
+            Hormone Info
+        </h2>
         <p id="hormone-info-text"></p>
     </div>
     <div class="info-section" id="food-recommendations">
         <h2 style="display: flex; align-items: center; gap: 10px">
             <img src="images/food.png" alt="bunny eating" style="width: 100px; height: auto;">
-            Food Recommendations</h2>
+            Food Recommendations
+        </h2>
         <p id="food-recommendations-text"></p>
     </div>
     <div class="info-section" id="exercise-recommendations">
         <h2 style="display: flex; align-items: center; gap: 10px">
             <img src="images/exercise.png" alt="bunny exercising" style="width: 100px; height: auto;">
-            Exercise Recommendations</h2>
+            Exercise Recommendations
+        </h2>
         <p id="exercise-recommendations-text"></p>
     </div>
 
@@ -285,7 +302,6 @@
         function generateMenstrualCycleInfo() {
             if (selectedDays.length === 0) {
                 menstrualCycleInfoText.textContent = '';
-                periodLengthInfoText.textContent = '';
                 hormoneInfoText.textContent = '';
                 foodRecommendationsText.textContent = '';
                 exerciseRecommendationsText.textContent = '';
@@ -327,8 +343,7 @@
                 return;
             }
 
-            menstrualCycleInfoText.textContent = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}. Your average cycle length is ${cycleLength} days.`;
-            periodLengthInfoText.textContent = `Your period lasted for ${periodLength} days.`;
+            menstrualCycleInfoText.textContent = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}. Your previous period lasted for ${periodLength} days and your average cycle length is ${cycleLength} days.`;
 
             if (phase === 'Menstruation') {
                 hormoneInfoText.textContent = 'During menstruation, your estrogen and progesterone levels are at their lowest. Your body is shedding the lining of the uterus, and you may experience symptoms such as cramping, bloating, and mood swings.';

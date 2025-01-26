@@ -1,0 +1,45 @@
+@font-face {
+    font-family: 'pink';
+    src: url('./fonts/PinkStory-3lO6p.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'duck';
+    src: url('./fonts/SmartDuck-pgp8a.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'anns';
+    src: url('./fonts/Annshandwriting-MGGB.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'edensor';
+    src: url('./fonts/EdensorFree-RpRqe.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'mine';
+    src: url('./fonts/MineOhMine-2GDX.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'pink', 'duck', 'mine', 'edensor', 'anns';
+    background-color: #ffe4e1;
+    color: #333;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #ff69b4;
+}
