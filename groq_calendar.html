@@ -144,7 +144,7 @@
         <h2>Exercise Recommendations</h2>
         <p id="exercise-recommendations-text"></p>
     </div>
-
+    
     <script>
         // Get the calendar element
         const calendar = document.getElementById('calendar');
@@ -278,9 +278,8 @@
         renderCalendar();
         // Existing calendar and date tracking code remains the same as in your original script
 
-        const generate_button = document.getElementById("generate-button");
-        generate_button.addEventListener('click', () => {
-        
+        generateButton.addEventListener('click', () => {
+
         // Function to generate personalized recommendations using Groq
             async function generatePersonalizedRecommendations(phase, cycleDay) {
                 const apiKey = document.getElementById('groq-api-key').value;
@@ -289,8 +288,13 @@
                     alert('Please enter your Groq API key');
                     return null;
                 }
-
-                const groq = new Groq({ apiKey: apiKey });
+                
+                try {
+                    const groq = new Groq({ apiKey: process.env.apiKey });
+                }
+                catch (error) {
+                    alert("Error with groq");
+                }
 
                 try {
                     const chatCompletion = await groq.chat.completions.create({
@@ -310,8 +314,7 @@
                         model: 'llama3-8b-8192',
                         maxTokens: 300
                     });
-
-                    return chatCompletion.choices[0].message.content;
+                    return chatCompletion.choices[0]?.message?.content;
                 } catch (error) {
                     console.error('Error generating recommendations:', error);
                     alert('Failed to generate recommendations. Check your API key and internet connection.');
@@ -322,16 +325,17 @@
             // Modify the existing generateMenstrualCycleInfo function to use Groq
             async function generateMenstrualCycleInfo() {
                 const selectedDays = days.flat().filter(day => day && day.selected);
-                if (selectedDays.length === 0) {
+                if (selectedDays.length == 0) {
                     // Clear previous recommendations
-                    menstrualCycleInfoTextarea.value = '';
-                    periodLengthInfoTextarea.value = '';
-                    hormoneInfoTextarea.value = '';
-                    foodRecommendationsTextarea.value = '';
-                    exerciseRecommendationsTextarea.value = '';
+                    menstrualCycleInfoText.textContent = '';
+                    periodLengthInfoText.textContent = '';
+                    hormoneInfoText.textContent = '';
+                    foodRecommendationsText.textContent = '';
+                    exerciseRecommendationsText.textContent = '';
+                    alert("Please select some days.");
                     return;
                 }
-
+                
                 const firstDay = selectedDays[0].date;
                 const lastDay = selectedDays[selectedDays.length - 1].date;
                 const periodLength = Math.floor((lastDay - firstDay) / (1000 * 60 * 60 * 24)) + 1;
@@ -343,43 +347,61 @@
                 if (cycleDay <= 5) {
                     phase = 'Menstruation';
                 } else if (cycleDay <= 14) {
-                    phase = 'Follicular phase';
+                    phase = 'Follicular';
                 } else if (cycleDay <= 21) {
                     phase = 'Ovulation';
                 } else {
-                    phase = 'Luteal phase';
+                    phase = 'Luteal';
                 }
 
                 const cycleLength = parseInt(cycleLengthInput.value);
                 if (isNaN(cycleLength)) {
-                    menstrualCycleInfoTextarea.value = 'Please enter a valid cycle length.';
+                    menstrualCycleInfoText.value = 'Please enter a valid cycle length.';
                     return;
                 }
 
-                menstrualCycleInfoTextarea.value = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase}. Your average cycle length is ${cycleLength} days.`;
-                periodLengthInfoTextarea.value = `Your period lasted for ${periodLength} days.`;
+                menstrualCycleInfoText.textContent = `You are on day ${cycleDay} of your menstrual cycle. You are currently in the ${phase} phase. Your average cycle length is ${cycleLength} days.`;
+                periodLengthInfoText.textContent = `Your period lasted for ${periodLength} days.`;
 
+                
                 // Use Groq to generate personalized recommendations
                 const recommendations = await generatePersonalizedRecommendations(phase, cycleDay);
                 
                 if (recommendations) {
                     // Split recommendations into hormone info, food, and exercise recommendations
                     const sections = recommendations.split('\n\n');
-                    hormoneInfoTextarea.value = sections[0] || '';
-                    foodRecommendationsTextarea.value = sections[1] || '';
-                    exerciseRecommendationsTextarea.value = sections[2] || '';
-                } else {
+                    hormoneInfoText.value = sections[0] || '';
+                    foodRecommendationsText.value = sections[1] || '';
+                    exerciseRecommendationsText.value = sections[2] || '';
+                }
+                else {
                     // Fallback to default recommendations if Groq fails
                     switch (phase) {
                         case 'Menstruation':
-                            hormoneInfoTextarea.value = 'Estrogen and progesterone are at their lowest. The uterine lining is being shed.';
-                            foodRecommendationsTextarea.value = 'Focus on iron-rich foods like spinach, red meat, and beans.';
-                            exerciseRecommendationsTextarea.value = 'Gentle exercises like walking and yoga are recommended.';
+                            hormoneInfoText.textContent = 'Estrogen and progesterone are at their lowest. The uterine lining is being shed.';
+                            foodRecommendationsText.textContent = 'Focus on iron-rich foods like spinach, red meat, and beans.';
+                            exerciseRecommendationsText.textContent = 'Gentle exercises like walking and yoga are recommended.';
+                            break;
+                        case 'Follicular':
+                            hormoneInfoText.textContent = 'follicular';
+                            foodRecommendationsText.textContent = 'Focus on iron-rich foods like spinach, red meat, and beans.';
+                            exerciseRecommendationsText.textContent = 'Gentle exercises like walking and yoga are recommended.';
+                            break;
+                        case 'Ovulation':
+                            hormoneInfoText.textContent = 'ovulation';
+                            foodRecommendationsText.textContent = 'Focus on iron-rich foods like spinach, red meat, and beans.';
+                            exerciseRecommendationsText.textContent = 'Gentle exercises like walking and yoga are recommended.';
+                            break;
+                        case 'Luteal':
+                            hormoneInfoText.textContent = 'luteal';
+                            foodRecommendationsText.textContent = 'Focus on iron-rich foods like spinach, red meat, and beans.';
+                            exerciseRecommendationsText.textContent = 'Gentle exercises like walking and yoga are recommended.';
                             break;
                         // Add similar fallback recommendations for other phases
                     }
                 }
             }
+            generateMenstrualCycleInfo();
         });
 
         // Rest of the existing event listeners and initialization code remains the same
